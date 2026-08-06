@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nimbus - Smart Watering, Weather-Synced</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1F2A22;
+    --bg:#F6F3EA;
+    --surface:#FFFDF7;
+    --teal:#2F6F5E;
+    --teal-deep:#1D4A3A;
+    --blue:#3E7CA6;
+    --coral:#E1704F;
+    --coral-dark:#C6572F;
+    --muted:#6B6152;
+    --line:#E1DAC7;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:var(--bg);
+  }
+  .font-display{ font-family:'Fraunces', serif; }
+  .font-mono{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.08em; }
+
+  /*NAV  */
+  #siteNav{
+    transition: box-shadow .3s ease, background-color .3s ease;
+  }
+  #siteNav.scrolled{
+    box-shadow: 0 2px 14px rgba(31,42,34,0.08);
+    background-color: rgba(246,243,234,0.92);
+    backdrop-filter: blur(6px);
+  }
+
+  /* BUTTONS */
+  .btn-primary{
+    background: var(--teal);
+    color: #fff;
+    transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+  }
+  .btn-primary:hover{
+    background: var(--teal-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(47,111,94,0.35);
+  }
+  .btn-ghost{
+    border: 1.5px solid var(--teal);
+    color: var(--teal);
+    transition: background-color .2s ease, color .2s ease, transform .2s ease;
+  }
+  .btn-ghost:hover{
+    background: var(--teal);
+    color:#fff;
+    transform: translateY(-2px);
+  }
+  .btn-coral{
+    background: var(--coral);
+    color:#fff;
+    transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+  }
+  .btn-coral:hover{
+    background: var(--coral-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(225,112,79,0.4);
+  }
+
+  /*  HERO KEYFRAME ANIMATION  */
+  @keyframes float{
+    0%   { transform: translateY(0px) rotate(-2deg); }
+    50%  { transform: translateY(-14px) rotate(2deg); }
+    100% { transform: translateY(0px) rotate(-2deg); }
+  }
+  .float-leaf{
+    animation: float 5s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+
+  @keyframes drip{
+    0%   { transform: translateY(0);   opacity: 0; }
+    15%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateY(46px); opacity: 0; }
+  }
+  .droplet{
+    animation: drip 2.4s cubic-bezier(.55,0,.45,1) infinite;
+  }
+  .droplet:nth-child(2){ animation-delay: .8s; }
+  .droplet:nth-child(3){ animation-delay: 1.6s; }
+
+  @keyframes fadeInUp{
+    from{ opacity:0; transform: translateY(18px); }
+    to  { opacity:1; transform: translateY(0); }
+  }
+  .hero-copy > *{
+    animation: fadeInUp .8s ease both;
+  }
+  .hero-copy > *:nth-child(1){ animation-delay: .05s; }
+  .hero-copy > *:nth-child(2){ animation-delay: .15s; }
+  .hero-copy > *:nth-child(3){ animation-delay: .25s; }
+  .hero-copy > *:nth-child(4){ animation-delay: .35s; }
+
+  /* (feature cards)  */
+  .reveal{
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.is-visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /*  FEATURE CARDS  */
+  .feature-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .feature-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(31,42,34,0.1);
+    border-color: var(--teal);
+  }
+  .feature-icon{
+    transition: background-color .25s ease, color .25s ease;
+  }
+  .feature-card:hover .feature-icon{
+    background: var(--teal);
+    color:#fff;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .float-leaf, .droplet, .hero-copy > *{ animation: none !important; }
+    .reveal{ transition: none !important; opacity:1 !important; transform:none !important; }
+    .feature-card, .btn-primary, .btn-ghost, .btn-coral{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!--NAV-->
+<nav id="siteNav" class="fixed top-0 left-0 right-0 z-50">
+  <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+    <span class="font-display text-2xl font-semibold" style="color:var(--teal)">Nimbus</span>
+    <div class="hidden sm:flex items-center gap-8 font-mono text-xs uppercase" style="color:var(--muted)">
+      <a href="#features" class="hover:opacity-70">Features</a>
+      <a href="#cta" class="hover:opacity-70">Pricing</a>
+    </div>
+    <a href="#cta" class="btn-primary px-5 py-2.5 rounded-full text-sm font-semibold">Get Nimbus</a>
+  </div>
+</nav>
+
+<!--HERO -->
+<header class="max-w-6xl mx-auto px-6 pt-40 pb-24 grid md:grid-cols-2 gap-12 items-center">
+  <div class="hero-copy">
+    <p class="font-mono text-xs uppercase mb-4" style="color:var(--coral)">Weather-synced watering</p>
+    <h1 class="font-display text-5xl md:text-6xl font-semibold leading-[1.05] mb-6">
+      Your plants, watered by the sky&nbsp;itself.
+    </h1>
+    <p class="text-lg mb-8 max-w-md" style="color:var(--muted)">
+      Nimbus reads the forecast and your soil at once, so every plant gets exactly what today calls for — never more, never less.
+    </p>
+    <div class="flex flex-wrap gap-4">
+      <a href="#cta" class="btn-primary px-7 py-3.5 rounded-full font-semibold">Pre-order — $89</a>
+      <a href="#features" class="btn-ghost px-7 py-3.5 rounded-full font-semibold">See how it works</a>
+    </div>
+  </div>
+
+  <!-- Signature hero illustration: floating pot + falling droplets -->
+  <div class="relative flex justify-center items-center h-72 md:h-96">
+    <svg class="float-leaf" width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="110" cy="190" rx="70" ry="14" fill="#00000010"/>
+      <path d="M60 150 L160 150 L148 200 L72 200 Z" fill="#E9DEC3" stroke="#1F2A22" stroke-width="2"/>
+      <path d="M110 150 C60 130 50 70 90 30 C100 70 90 110 110 150 Z" fill="#2F6F5E"/>
+      <path d="M110 150 C160 125 165 75 130 40 C130 80 130 115 110 150 Z" fill="#3E7CA6"/>
+      <circle cx="110" cy="150" r="6" fill="#1F2A22"/>
+    </svg>
+    <svg class="absolute" width="60" height="70" style="top:6px; left:calc(50% - 6px);" viewBox="0 0 20 70" fill="none">
+      <path class="droplet" d="M4 0 C4 0 8 6 8 9 C8 11.2 6.2 13 4 13 C1.8 13 0 11.2 0 9 C0 6 4 0 4 0 Z" fill="#3E7CA6"/>
+    </svg>
+    <svg class="absolute" width="60" height="70" style="top:6px; left:calc(50% + 14px);" viewBox="0 0 20 70" fill="none">
+      <path class="droplet" d="M4 0 C4 0 8 6 8 9 C8 11.2 6.2 13 4 13 C1.8 13 0 11.2 0 9 C0 6 4 0 4 0 Z" fill="#3E7CA6"/>
+    </svg>
+    <svg class="absolute" width="60" height="70" style="top:6px; left:calc(50% - 26px);" viewBox="0 0 20 70" fill="none">
+      <path class="droplet" d="M4 0 C4 0 8 6 8 9 C8 11.2 6.2 13 4 13 C1.8 13 0 11.2 0 9 C0 6 4 0 4 0 Z" fill="#3E7CA6"/>
+    </svg>
+  </div>
+</header>
+
+<!--FEATURES (scroll-revealed) -->
+<section id="features" class="max-w-6xl mx-auto px-6 py-24">
+  <p class="font-mono text-xs uppercase mb-3 text-center" style="color:var(--coral)">Why Nimbus</p>
+  <h2 class="font-display text-3xl md:text-4xl font-semibold text-center mb-16 max-w-xl mx-auto">
+    Three sensors. One decision, made for you.
+  </h2>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <article class="reveal feature-card rounded-2xl p-8">
+      <div class="feature-icon w-11 h-11 rounded-full flex items-center justify-center font-display text-lg font-semibold mb-6" style="background:#EDE7D8; color:var(--teal)">01</div>
+      <h3 class="font-display text-xl font-semibold mb-2">Soil moisture sensing</h3>
+      <p style="color:var(--muted)">A probe checks moisture at root depth every 20 minutes, not just the surface.</p>
+    </article>
+
+    <article class="reveal feature-card rounded-2xl p-8">
+      <div class="feature-icon w-11 h-11 rounded-full flex items-center justify-center font-display text-lg font-semibold mb-6" style="background:#EDE7D8; color:var(--teal)">02</div>
+      <h3 class="font-display text-xl font-semibold mb-2">Local forecast sync</h3>
+      <p style="color:var(--muted)">Rain expected tomorrow? Nimbus skips today's watering automatically.</p>
+    </article>
+
+    <article class="reveal feature-card rounded-2xl p-8">
+      <div class="feature-icon w-11 h-11 rounded-full flex items-center justify-center font-display text-lg font-semibold mb-6" style="background:#EDE7D8; color:var(--teal)">03</div>
+      <h3 class="font-display text-xl font-semibold mb-2">Silent drip delivery</h3>
+      <p style="color:var(--muted)">Water is released in a slow, even drip — quiet enough for a bedroom shelf.</p>
+    </article>
+
+  </div>
+</section>
+
+<!--CTA BAND-->
+<section id="cta" class="mt-8">
+  <div class="py-20 px-6 text-center" style="background:var(--teal-deep)">
+    <h2 class="font-display text-3xl md:text-4xl font-semibold mb-4" style="color:#F6F3EA">
+      Give your plants a better forecast.
+    </h2>
+    <p class="mb-8" style="color:#C9D9CF">Ships in 3 weeks. Free returns for 60 days.</p>
+    <a href="#" class="btn-coral inline-block px-8 py-3.5 rounded-full font-semibold">Pre-order Nimbus — $89</a>
+  </div>
+</section>
+
+<footer class="max-w-6xl mx-auto px-6 py-10 flex flex-col sm:flex-row justify-between items-center gap-3 font-mono text-xs uppercase" style="color:var(--muted)">
+  <span>© 2026 Nimbus</span>
+  <span>Made for plants that can't check the weather</span>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
