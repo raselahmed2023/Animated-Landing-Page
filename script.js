@@ -1,8 +1,4 @@
-/* ============================================================
-   NAV SCROLL EFFECT
-   Adds a background/shadow to the nav once the page scrolls past
-   the hero, so it stays legible over the illustration.
-   ============================================================ */
+
 const nav = document.querySelector("#siteNav");
 
 function handleNavScroll() {
